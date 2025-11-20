@@ -1,5 +1,6 @@
 import React from "react";
 import InputBar from "./components/inputBar/inputBar.jsx";
+import Background from "./components/background/Background.jsx";
 
 function App() {
 
@@ -12,11 +13,14 @@ function App() {
   };
 
   return (
-    <div>
-      <InputBar 
-        onUpdate={handleUpdate}
-        onSubmit={handleSubmit}
-      />
+    <div className="relative min-h-screen">
+      <Background />
+      <div className="relative z-20">
+        <InputBar 
+          onUpdate={handleUpdate}
+          onSubmit={handleSubmit}
+        />
+      </div>
     </div>
   );
 }
