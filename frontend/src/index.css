@@ -91,4 +91,8 @@
   .animate-scroll-left-slow {
     animation: scrollLeft 120s linear infinite;
   }
+
+  .blur-xs {
+    filter: blur(2px);
+  }
 }

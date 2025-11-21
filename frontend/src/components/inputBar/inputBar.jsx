@@ -1,22 +1,23 @@
 import { useState, useEffect, useRef } from "react";
 
-function InputBar({ onUpdate, onSubmit }) {
-  const [value, setValue] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+function InputBar({ onUpdate, onSubmit, onShowClick }) {
+  const [value, setValue] = useState("");  //current text within the input bar
+  const [suggestions, setSuggestions] = useState([]); //array of suggestions
+  const [showDropdown, setShowDropdown] = useState(false);  //conditional render fror dropdown
+  const [isLoading, setIsLoading] = useState(false); //awaiting fetch
+  
   const dropdownRef = useRef(null);
   const inputRef = useRef(null);
 
   useEffect(() => {
     const searchTVMaze = async () => {
-      if (value.trim().length < 2) {
+      if (value.trim().length < 2) { //we gather input
         setSuggestions([]);
         setShowDropdown(false);
         return;
       }
 
-      setIsLoading(true);
+      setIsLoading(true); //will await fro fetch
       try {
         const response = await fetch(
           `https://api.tvmaze.com/search/shows?q=${encodeURIComponent(value)}`
@@ -26,24 +27,25 @@ function InputBar({ onUpdate, onSubmit }) {
           id: item.show.id,
           name: item.show.name,
           image: item.show.image?.medium || null,
-        }));
+        })); //unpack
         setSuggestions(limitedResults);
         setShowDropdown(limitedResults.length > 0);
       } catch (error) {
-        console.error("Error fetching from TVMaze:", error);
+        console.error("Error fetching from TVMaze:", error); //error handling
         setSuggestions([]);
         setShowDropdown(false);
       } finally {
         setIsLoading(false);
-      }
+      } //will dismiss loading
     };
-
+    
+    //to not hammer the api wayyyy to much
     const debounceTimer = setTimeout(searchTVMaze, 300);
     return () => clearTimeout(debounceTimer);
   }, [value]);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event) => { //classic click outside and i close
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target) &&
@@ -53,31 +55,35 @@ function InputBar({ onUpdate, onSubmit }) {
         setShowDropdown(false);
       }
     };
-
+    
+    //when component is mounted it will run this function
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleSubmit = (e) => {
+  //the holy trinity of input bars with dropdowns
+  const handleSubmit = (e) => { //when submitting
     e.preventDefault();
     setShowDropdown(false);
     onSubmit?.(value);
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e) => { //when typing
     const newVal = e.target.value;
     setValue(newVal);
     onUpdate?.(newVal);
   };
 
-  const handleSuggestionClick = (suggestion) => {
+  const handleSuggestionClick = (suggestion) => { //when click
     setValue(suggestion.name);
     setShowDropdown(false);
-    onSubmit?.(suggestion.name);
+    onShowClick?.(suggestion.id); // Pass show ID to open modal
   };
-
+    //i mean the structure i ssimilar to your form input form
+    //main difference would be the conitional dropdown div
+    //and a button
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 relative z-20">
+    <div className="w-full flex flex-col items-center justify-center px-4 relative z-20 py-8">
       <div className="w-full max-w-lg relative">
         <form
           onSubmit={handleSubmit}
@@ -100,7 +106,7 @@ function InputBar({ onUpdate, onSubmit }) {
               <div
                 ref={dropdownRef}
                 className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-80 overflow-y-auto"
-              >
+              >  
                 {suggestions.map((suggestion) => (
                   <button
                     key={suggestion.id}

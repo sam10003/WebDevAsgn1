@@ -1,0 +1,26 @@
+
+#okay time to read i guess
+
+lets first understand concisely what i must do to pass this project
+project accordingly
+
+the goal seems to be mainly to create a website that displays
+information obtained through the TVMaze API, collecting info about
+TV series.
+
+When starting the app:
+ -search field: images and the series names should appear
+ -clicking on said series should display detailed info about them,
+ -there has to a favourite mode of some sort
+ -we are obligated to use the fucking local storage i guess
+ -all the functionality must be implemented within a SINGLE page
+
+RUBRIC
+
+CSS (2p) -> the use of queries to make it responsive will be valued
+React Components -> (3p) Croeect use of components and hooks
+Access to the TVMaze API to perform the seach -> 1 point
+Access to the TVMaze API for detailed series information -> 1 point
+Favourites and list management -> 2 points
+Free development -> 1 point
+
